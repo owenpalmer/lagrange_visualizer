@@ -2,19 +2,28 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
-    margin: 20px;
+    font-family: 'Georgia', serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f1e8;
+    color: #5d4e37;
 }
 
 h2 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #5d4e37;
+    text-align: center;
 }
 
 #main-container {
     display: flex;
     width: 100%;
     max-width: 1200px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    gap: 20px;
 }
 
 /* Left panel: controls and canvas */
@@ -22,45 +31,85 @@ h2 {
     flex: 1;
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
 }
 
 #controls {
-    margin-bottom: 10px;
+    background-color: #ede4d3;
+    border: 2px solid #d4c4a8;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#controls button {
+    background-color: #d4c4a8;
+    border: 1px solid #b8a082;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 16px;
+    color: #5d4e37;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: 'Georgia', serif;
+}
+
+#controls button:hover {
+    background-color: #c4b49a;
+}
+
+#controls input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: #b8a082;
 }
 
 #plotContainer {
     position: relative;
     display: flex;
     justify-content: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e0d5c7;
 }
 
 #plotCanvas {
-    border: 1px solid #333;
+    border: 2px solid #d4c4a8;
+    border-radius: 8px;
     cursor: crosshair;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* Math display - now below everything */
 #mathDisplay {
     width: 100%;
-    border: 1px solid #ddd;
-    padding: 10px;
-    background-color: #fafafa;
+    background-color: #ffffff;
+    border: 1px solid #e0d5c7;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+    color: #5d4e37;
 }
 
 .latex-block {
     margin-bottom: 10px;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    color: #5d4e37;
 }
 
 /* Highlight styles for LaTeX elements */
 .hl {
-    background: rgba(255, 255, 0, 0.45);
+    background: rgba(212, 196, 168, 0.6);
     padding: 0 0.18em;
     margin: 0 -0.18em;
     border-radius: 0.25em;
@@ -68,7 +117,7 @@ h2 {
 }
 
 .hl-hover {
-    background: rgba(0, 123, 255, 0.3);
+    background: rgba(93, 78, 55, 0.3);
     padding: 0 0.18em;
     margin: 0 -0.18em;
     border-radius: 0.25em;
@@ -76,8 +125,10 @@ h2 {
 }
 
 label {
-    font-size: 14px;
+    font-size: 16px;
     margin-left: 5px;
+    color: #5d4e37;
+    font-family: 'Georgia', serif;
 }
 
 /* Table styling */
@@ -88,23 +139,41 @@ label {
 #pointsTable {
     border-collapse: collapse;
     width: 100%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e0d5c7;
 }
 
 #pointsTable th,
 #pointsTable td {
-    border: 1px solid #ccc;
-    padding: 6px;
+    border: 1px solid #e0d5c7;
+    padding: 12px;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
+    color: #5d4e37;
+    font-family: 'Georgia', serif;
 }
 
 #pointsTable th {
-    background-color: #f0f0f0;
+    background-color: #ede4d3;
+    font-weight: bold;
+    border-bottom: 2px solid #d4c4a8;
+}
+
+#pointsTable tbody tr:nth-child(even) {
+    background-color: #f8f5f0;
+}
+
+#pointsTable tbody tr:hover {
+    background-color: #ede4d3;
 }
 
 .ghost-row {
-    opacity: 0.5;
+    opacity: 0.6;
     font-style: italic;
+    background-color: #f0f0f0 !important;
 }
 
 /* Hoverable table cells */
@@ -114,5 +183,41 @@ label {
 }
 
 .hoverable-cell:hover {
-    background-color: rgba(0, 123, 255, 0.1);
+    background-color: rgba(184, 160, 130, 0.2) !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #main-container {
+        flex-direction: column;
+    }
+    
+    #right-panel {
+        flex: none;
+    }
+    
+    #controls {
+        justify-content: center;
+    }
+    
+    body {
+        padding: 10px;
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+}
+
+/* MathJax styling to match theme */
+.MathJax {
+    color: #5d4e37 !important;
+}
+
+mjx-container {
+    color: #5d4e37 !important;
+}
+
+mjx-math {
+    color: #5d4e37 !important;
 }
