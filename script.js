@@ -243,12 +243,17 @@ function formatBasisNumeric(allPoints, j) {
 // Update math display: show only the current polynomial
 function updateMath() {
     mathDisplay.innerHTML = '';
+    
     // Current polynomial only
     const curDiv = document.createElement('div');
     curDiv.classList.add('latex-block');
+    
     let curHtml = `<strong>Lagrange Polynomial (n = ${points.length}):</strong><br/>`;
     if (points.length === 0) {
         curHtml += `No points defined.`;
+        curDiv.innerHTML = curHtml;
+        mathDisplay.appendChild(curDiv);
+        return;
     } else if (points.length === 1) {
         const yVal = points[0].y.toFixed(3);
         curHtml += `$$P(x) = ${yVal}$$`;
@@ -262,10 +267,35 @@ function updateMath() {
         }
         curHtml += `$$P(x) = ${terms.join(' + ')}$$`;
     }
+    
     curDiv.innerHTML = curHtml;
     mathDisplay.appendChild(curDiv);
 
-    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+    if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise([curDiv]).then(() => {
+            // After MathJax renders, check if we need to scale
+            const mathElement = curDiv.querySelector('.MathJax');
+            if (mathElement) {
+                const containerWidth = mathDisplay.clientWidth - 20; // Account for padding
+                const mathWidth = mathElement.scrollWidth;
+                
+                if (mathWidth > containerWidth) {
+                    // Calculate scale factor needed
+                    const scaleFactor = containerWidth / mathWidth;
+                    
+                    // Apply CSS transform scaling with proper origin
+                    mathElement.style.transform = `scale(${scaleFactor})`;
+                    mathElement.style.transformOrigin = 'left center';
+                    mathElement.style.display = 'inline-block';
+                    
+                    // Adjust the container height to account for scaling
+                    const originalHeight = mathElement.offsetHeight;
+                    const scaledHeight = originalHeight * scaleFactor;
+                    curDiv.style.height = scaledHeight + 'px';
+                }
+            }
+        });
+    }
 }
 
 // Redraw everything
@@ -321,6 +351,11 @@ document.getElementById('clearBtn').addEventListener('click', () => {
     points = [];
     hoverPoint = null;
     redrawAll();
+});
+
+// Handle window resize to re-adjust math scaling
+window.addEventListener('resize', () => {
+    setTimeout(updateMath, 200);
 });
 
 // Initial draw
