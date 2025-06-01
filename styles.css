@@ -58,6 +58,23 @@ h2 {
     overflow-wrap: break-word;
 }
 
+/* Highlight styles for LaTeX elements */
+.hl {
+    background: rgba(255, 255, 0, 0.45);
+    padding: 0 0.18em;
+    margin: 0 -0.18em;
+    border-radius: 0.25em;
+    transition: background-color 250ms ease;
+}
+
+.hl-hover {
+    background: rgba(0, 123, 255, 0.3);
+    padding: 0 0.18em;
+    margin: 0 -0.18em;
+    border-radius: 0.25em;
+    transition: background-color 250ms ease;
+}
+
 label {
     font-size: 14px;
     margin-left: 5px;
@@ -88,4 +105,14 @@ label {
 .ghost-row {
     opacity: 0.5;
     font-style: italic;
+}
+
+/* Hoverable table cells */
+.hoverable-cell {
+    cursor: pointer;
+    transition: background-color 200ms ease;
+}
+
+.hoverable-cell:hover {
+    background-color: rgba(0, 123, 255, 0.1);
 }

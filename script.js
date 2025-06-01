@@ -190,6 +190,15 @@ function updateTable() {
         idxCell.textContent = i + 1;
         xCell.textContent = p.x.toFixed(3);
         yCell.textContent = p.y.toFixed(3);
+        
+        // Make the f(xi) cell hoverable
+        yCell.classList.add('hoverable-cell');
+        yCell.dataset.pointIndex = i;
+        
+        // Add hover event listeners
+        yCell.addEventListener('mouseenter', () => highlightMathElement(i));
+        yCell.addEventListener('mouseleave', () => clearMathHighlight(i));
+        
         row.appendChild(idxCell);
         row.appendChild(xCell);
         row.appendChild(yCell);
@@ -211,7 +220,23 @@ function updateTable() {
     }
 }
 
-// Format one basis term symbolically
+// Highlight corresponding math element
+function highlightMathElement(pointIndex) {
+    const mathElement = document.getElementById(`fx${pointIndex + 1}`);
+    if (mathElement) {
+        mathElement.classList.add('hl-hover');
+    }
+}
+
+// Clear math element highlight
+function clearMathHighlight(pointIndex) {
+    const mathElement = document.getElementById(`fx${pointIndex + 1}`);
+    if (mathElement) {
+        mathElement.classList.remove('hl-hover');
+    }
+}
+
+// Format one basis term symbolically with highlighting
 function formatBasisSymbolic(allPoints, j) {
     const n = allPoints.length;
     let numParts = [];
@@ -221,12 +246,13 @@ function formatBasisSymbolic(allPoints, j) {
         numParts.push(`(x - x_{${m + 1}})`);
         denomParts.push(`(x_{${j + 1}} - x_{${m + 1}})`);
     }
-    const fSym = `f(x_{${j + 1}})`;
+    const fSym = `\\cssId{fx${j + 1}}{f(x_{${j + 1}})}`;
     const numExpr = numParts.join("\\cdot ");
     const denomExpr = denomParts.join("\\cdot ");
     return `\\frac{${numExpr}}{${denomExpr}} \\cdot ${fSym}`;
 }
-// Format one basis term numerically
+
+// Format one basis term numerically with highlighting
 function formatBasisNumeric(allPoints, j) {
     const n = allPoints.length;
     let numParts = [];
@@ -241,7 +267,7 @@ function formatBasisNumeric(allPoints, j) {
     const yj = allPoints[j].y.toFixed(3);
     const numExpr = numParts.join("\\cdot ");
     const denomExpr = denomParts.join("\\cdot ");
-    return `\\frac{${numExpr}}{${denomExpr}} \\cdot (${yj})`;
+    return `\\frac{${numExpr}}{${denomExpr}} \\cdot \\cssId{fx${j + 1}}{(${yj})}`;
 }
 
 // Update math display: show only the current polynomial
@@ -260,7 +286,7 @@ function updateMath() {
         return;
     } else if (points.length === 1) {
         const yVal = points[0].y.toFixed(3);
-        curHtml += `$$P(x) = ${yVal}$$`;
+        curHtml += `$$P(x) = \\cssId{fx1}{${yVal}}$$`;
     } else {
         let terms = [];
         for (let j = 0; j < points.length; j++) {
