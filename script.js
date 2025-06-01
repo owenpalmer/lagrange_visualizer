@@ -41,6 +41,12 @@ function basisColor(idx, total) {
     return `hsl(${hue}, 70%, 50%)`;
 }
 
+// Generate muted version of basis color for background highlighting
+function basisColorMuted(idx, total) {
+    const hue = (idx / total) * 360;
+    return `hsl(${hue}, 25%, 85%)`; // Much lower saturation, higher lightness
+}
+
 // Convert HSL color to RGB values for CSS
 function hslToRgb(hslString) {
     // Parse HSL string like "hsl(120, 70%, 50%)"
@@ -90,8 +96,8 @@ function updateBasisStyles() {
     
     let css = '';
     for (let j = 0; j < points.length; j++) {
-        const color = hslToRgb(basisColor(j, points.length));
-        css += `.basis-term-${j} { background-color: ${color}; padding: 2px 4px; border-radius: 3px; }\n`;
+        const mutedColor = hslToRgb(basisColorMuted(j, points.length));
+        css += `.basis-term-${j} { background-color: ${mutedColor}; padding: 2px 4px; border-radius: 3px; }\n`;
     }
     
     style.textContent = css;
