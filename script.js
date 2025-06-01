@@ -1,4 +1,3 @@
-
 // Configuration
 const X_MIN = -10, X_MAX = 10;
 const Y_MIN = -10, Y_MAX = 10;
@@ -241,15 +240,18 @@ function formatBasisNumeric(allPoints, j) {
     return `\\frac{${numExpr}}{${denomExpr}} \\cdot (${yj})`;
 }
 
-// Update math display: show each basis term and the sum
+// Update math display: show only the current polynomial
 function updateMath() {
     mathDisplay.innerHTML = '';
-    // Current order
+    // Current polynomial only
     const curDiv = document.createElement('div');
     curDiv.classList.add('latex-block');
-    let curHtml = `<strong>Current Order (n = ${points.length}):</strong><br/>`;
+    let curHtml = `<strong>Lagrange Polynomial (n = ${points.length}):</strong><br/>`;
     if (points.length === 0) {
-        curHtml += `No points.`;
+        curHtml += `No points defined.`;
+    } else if (points.length === 1) {
+        const yVal = points[0].y.toFixed(3);
+        curHtml += `$$P(x) = ${yVal}$$`;
     } else {
         let terms = [];
         for (let j = 0; j < points.length; j++) {
@@ -258,31 +260,10 @@ function updateMath() {
                 : formatBasisSymbolic(points, j);
             terms.push(termTex);
         }
-        curHtml += `$$\\sum_{j=1}^{${points.length}} ${terms.join(' + ')}$$`;
+        curHtml += `$$P(x) = \\sum_{j=1}^{${points.length}} ${terms.join(' + ')}$$`;
     }
     curDiv.innerHTML = curHtml;
     mathDisplay.appendChild(curDiv);
-
-    // Next order with hover
-    const nextPoints = points.slice();
-    if (hoverPoint) nextPoints.push({ x: hoverPoint.x, y: hoverPoint.y });
-    const nextDiv = document.createElement('div');
-    nextDiv.classList.add('latex-block');
-    let nextHtml = `<strong>Next Order (n = ${nextPoints.length}):</strong><br/>`;
-    if (nextPoints.length === 0) {
-        nextHtml += `No points.`;
-    } else {
-        let terms = [];
-        for (let j = 0; j < nextPoints.length; j++) {
-            const termTex = displayNumeric
-                ? formatBasisNumeric(nextPoints, j)
-                : formatBasisSymbolic(nextPoints, j);
-            terms.push(termTex);
-        }
-        nextHtml += `$$\\sum_{j=1}^{${nextPoints.length}} ${terms.join(' + ')}$$`;
-    }
-    nextDiv.innerHTML = nextHtml;
-    mathDisplay.appendChild(nextDiv);
 
     if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
 }
