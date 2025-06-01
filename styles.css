@@ -5,6 +5,7 @@ body {
     font-family: 'Georgia', serif;
     margin: 0;
     padding: 20px;
+    padding-top: 0px;
     background-color: #f5f1e8;
     color: #5d4e37;
 }
@@ -21,12 +22,11 @@ h2 {
 #main-container {
     display: flex;
     width: 100%;
-    max-width: 1200px;
     margin-bottom: 30px;
     gap: 20px;
 }
 
-/* Left panel: controls and canvas */
+/* Left panel: canvas only */
 #left-panel {
     flex: 1;
     display: flex;
@@ -41,9 +41,9 @@ h2 {
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     display: flex;
+    flex-direction: column;
+    gap: 10px;
     align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
 }
 
 #controls button {
@@ -56,14 +56,31 @@ h2 {
     cursor: pointer;
     transition: background-color 0.2s;
     font-family: 'Georgia', serif;
+    width: 100%;
+    max-width: 200px;
 }
 
 #controls button:hover {
     background-color: #c4b49a;
 }
 
-#controls input[type="checkbox"] {
-    margin-right: 5px;
+.checkbox-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 200px;
+}
+
+.checkbox-line label {
+    font-size: 16px;
+    color: #5d4e37;
+    font-family: 'Georgia', serif;
+    margin: 0;
+}
+
+.checkbox-line input[type="checkbox"] {
+    margin: 0;
     accent-color: #b8a082;
 }
 
@@ -79,10 +96,7 @@ h2 {
 }
 
 #plotCanvas {
-    border: 2px solid #d4c4a8;
-    border-radius: 8px;
     cursor: crosshair;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 /* Math display - now below everything */
@@ -134,6 +148,8 @@ label {
 /* Table styling */
 #right-panel {
     flex: 0 0 300px;
+    display: flex;
+    flex-direction: column;
 }
 
 #pointsTable {
@@ -144,6 +160,7 @@ label {
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     border: 1px solid #e0d5c7;
+    table-layout: fixed;
 }
 
 #pointsTable th,
@@ -154,6 +171,10 @@ label {
     font-size: 16px;
     color: #5d4e37;
     font-family: 'Georgia', serif;
+    width: 33.33%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #pointsTable th {

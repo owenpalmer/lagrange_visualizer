@@ -20,19 +20,25 @@
 <body>
   <h2>Lagrange Polynomial Visualizer</h2>
   <div id="main-container">
-    <!-- Left: controls and canvas -->
+    <!-- Left: canvas only -->
     <div id="left-panel">
-      <div id="controls">
-        <button id="clearBtn">Clear All</button>
-        <input type="checkbox" id="toggleNumeric" /><label for="toggleNumeric">Display Numerical</label>
-        <input type="checkbox" id="toggleBasisCurves" checked /><label for="toggleBasisCurves">Show Basis Curves</label>
-      </div>
       <div id="plotContainer">
         <canvas id="plotCanvas" width="600" height="600"></canvas>
       </div>
     </div>
-    <!-- Right: points table -->
+    <!-- Right: controls and points table -->
     <div id="right-panel">
+      <div id="controls">
+        <button id="clearBtn">Clear All</button>
+        <div class="checkbox-line">
+          <label for="toggleBasisCurves">Show Basis Curves</label>
+          <input type="checkbox" id="toggleBasisCurves" checked />
+        </div>
+        <div class="checkbox-line">
+          <label for="toggleNumeric">Display Numerical</label>
+          <input type="checkbox" id="toggleNumeric" />
+        </div>
+      </div>
       <table id="pointsTable">
         <thead>
           <tr><th>i</th><th>x<sub>i</sub></th><th>f(x<sub>i</sub>)</th></tr>
