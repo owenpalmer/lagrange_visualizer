@@ -191,11 +191,19 @@ function updateTable() {
         xCell.textContent = p.x.toFixed(3);
         yCell.textContent = p.y.toFixed(3);
         
+        // Make the x_i cell hoverable
+        xCell.classList.add('hoverable-cell');
+        xCell.dataset.pointIndex = i;
+        
         // Make the f(xi) cell hoverable
         yCell.classList.add('hoverable-cell');
         yCell.dataset.pointIndex = i;
         
-        // Add hover event listeners
+        // Add hover event listeners for x_i values
+        xCell.addEventListener('mouseenter', () => highlightXiElements(i));
+        xCell.addEventListener('mouseleave', () => clearXiHighlight(i));
+        
+        // Add hover event listeners for f(x_i) values
         yCell.addEventListener('mouseenter', () => highlightMathElement(i));
         yCell.addEventListener('mouseleave', () => clearMathHighlight(i));
         
@@ -220,7 +228,7 @@ function updateTable() {
     }
 }
 
-// Highlight corresponding math element
+// Highlight corresponding math element for f(x_i)
 function highlightMathElement(pointIndex) {
     const mathElement = document.getElementById(`fx${pointIndex + 1}`);
     if (mathElement) {
@@ -228,12 +236,38 @@ function highlightMathElement(pointIndex) {
     }
 }
 
-// Clear math element highlight
+// Clear math element highlight for f(x_i)
 function clearMathHighlight(pointIndex) {
     const mathElement = document.getElementById(`fx${pointIndex + 1}`);
     if (mathElement) {
         mathElement.classList.remove('hl-hover');
     }
+}
+
+// Highlight all x_i elements in the math expression
+function highlightXiElements(pointIndex) {
+    const xiIndex = pointIndex + 1;
+    // Find all elements with IDs that start with "x" followed by the index, but NOT "fx"
+    const elements = document.querySelectorAll(`[id^="x${xiIndex}"]`);
+    elements.forEach(element => {
+        // Make sure we don't highlight f(x_i) elements
+        if (!element.id.startsWith('fx')) {
+            element.classList.add('hl-hover');
+        }
+    });
+}
+
+// Clear highlight for all x_i elements
+function clearXiHighlight(pointIndex) {
+    const xiIndex = pointIndex + 1;
+    // Find all elements with IDs that start with "x" followed by the index, but NOT "fx"
+    const elements = document.querySelectorAll(`[id^="x${xiIndex}"]`);
+    elements.forEach(element => {
+        // Make sure we don't unhighlight f(x_i) elements
+        if (!element.id.startsWith('fx')) {
+            element.classList.remove('hl-hover');
+        }
+    });
 }
 
 // Format one basis term symbolically with highlighting
@@ -243,8 +277,8 @@ function formatBasisSymbolic(allPoints, j) {
     let denomParts = [];
     for (let m = 0; m < n; m++) {
         if (m === j) continue;
-        numParts.push(`(x - x_{${m + 1}})`);
-        denomParts.push(`(x_{${j + 1}} - x_{${m + 1}})`);
+        numParts.push(`(x - \\cssId{x${m + 1}num${j + 1}}{x_{${m + 1}}})`);
+        denomParts.push(`(\\cssId{x${j + 1}denom${j + 1}}{x_{${j + 1}}} - \\cssId{x${m + 1}denom${j + 1}}{x_{${m + 1}}})`);
     }
     const fSym = `\\cssId{fx${j + 1}}{f(x_{${j + 1}})}`;
     const numExpr = numParts.join("\\cdot ");
@@ -260,9 +294,9 @@ function formatBasisNumeric(allPoints, j) {
     for (let m = 0; m < n; m++) {
         if (m === j) continue;
         const xm = allPoints[m].x.toFixed(3);
-        numParts.push(`(x - ${xm})`);
+        numParts.push(`(x - \\cssId{x${m + 1}num${j + 1}}{${xm}})`);
         const xj = allPoints[j].x.toFixed(3);
-        denomParts.push(`(${xj} - ${xm})`);
+        denomParts.push(`(\\cssId{x${j + 1}denom${j + 1}}{${xj}} - \\cssId{x${m + 1}denom${j + 1}}{${xm}})`);
     }
     const yj = allPoints[j].y.toFixed(3);
     const numExpr = numParts.join("\\cdot ");
