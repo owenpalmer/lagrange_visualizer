@@ -13,11 +13,13 @@ const SAMPLE_STEPS = 500;
 let points = [];          // Array of { x, y }
 let hoverPoint = null;    // { x, y } or null
 let displayNumeric = false;
+let showBasisCurves = true; // New state for basis curves visibility
 
 // DOM refs
 const canvas = document.getElementById("plotCanvas");
 const ctx = canvas.getContext("2d");
 const toggleNumeric = document.getElementById("toggleNumeric");
+const toggleBasisCurves = document.getElementById("toggleBasisCurves");
 const pointsTableBody = document.querySelector("#pointsTable tbody");
 const mathDisplay = document.getElementById("mathDisplay");
 
@@ -115,6 +117,8 @@ function drawAxes() {
 
 // Draw individual basis curves ℓ_j(x)*y_j
 function drawBasisCurves(allPoints) {
+    if (!showBasisCurves) return; // Skip drawing if disabled
+    
     const n = allPoints.length;
     if (n === 0) return;
     for (let j = 0; j < n; j++) {
@@ -344,6 +348,11 @@ canvas.addEventListener('mouseleave', () => {
 
 toggleNumeric.addEventListener('change', () => {
     displayNumeric = toggleNumeric.checked;
+    redrawAll();
+});
+
+toggleBasisCurves.addEventListener('change', () => {
+    showBasisCurves = toggleBasisCurves.checked;
     redrawAll();
 });
 
