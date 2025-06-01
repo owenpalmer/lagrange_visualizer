@@ -14,9 +14,10 @@ h2 {
     display: flex;
     width: 100%;
     max-width: 1200px;
+    margin-bottom: 20px;
 }
 
-/* Left panel: controls, canvas, math */
+/* Left panel: controls and canvas */
 #left-panel {
     flex: 1;
     display: flex;
@@ -39,17 +40,22 @@ h2 {
     cursor: crosshair;
 }
 
+/* Math display - now below everything */
 #mathDisplay {
-    margin-top: 10px;
+    width: 100%;
     border: 1px solid #ddd;
     padding: 10px;
     background-color: #fafafa;
-    max-height: 200px;
+    height: 200px;
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .latex-block {
     margin-bottom: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 label {
