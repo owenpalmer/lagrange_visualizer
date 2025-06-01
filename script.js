@@ -260,7 +260,7 @@ function updateMath() {
                 : formatBasisSymbolic(points, j);
             terms.push(termTex);
         }
-        curHtml += `$$P(x) = \\sum_{j=1}^{${points.length}} ${terms.join(' + ')}$$`;
+        curHtml += `$$P(x) = ${terms.join(' + ')}$$`;
     }
     curDiv.innerHTML = curHtml;
     mathDisplay.appendChild(curDiv);
