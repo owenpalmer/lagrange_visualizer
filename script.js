@@ -41,6 +41,63 @@ function basisColor(idx, total) {
     return `hsl(${hue}, 70%, 50%)`;
 }
 
+// Convert HSL color to RGB values for CSS
+function hslToRgb(hslString) {
+    // Parse HSL string like "hsl(120, 70%, 50%)"
+    const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+    if (!match) return "rgb(0, 0, 0)";
+    
+    const h = parseInt(match[1]) / 360;
+    const s = parseInt(match[2]) / 100;
+    const l = parseInt(match[3]) / 100;
+    
+    const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    };
+    
+    let r, g, b;
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+    
+    return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+}
+
+// Create or update CSS styles for basis term backgrounds
+function updateBasisStyles() {
+    // Remove existing basis styles
+    let existingStyle = document.getElementById('basis-term-styles');
+    if (existingStyle) {
+        existingStyle.remove();
+    }
+    
+    if (!showBasisCurves || points.length === 0) return;
+    
+    // Create new style element
+    const style = document.createElement('style');
+    style.id = 'basis-term-styles';
+    
+    let css = '';
+    for (let j = 0; j < points.length; j++) {
+        const color = hslToRgb(basisColor(j, points.length));
+        css += `.basis-term-${j} { background-color: ${color}; padding: 2px 4px; border-radius: 3px; }\n`;
+    }
+    
+    style.textContent = css;
+    document.head.appendChild(style);
+}
+
 // Compute ℓ_j(x) * y_j at xVal, along with symbolic denominator/numerator lists
 function lagrangeBasisTerm(allPoints, j, xVal) {
     const n = allPoints.length;
@@ -270,8 +327,8 @@ function clearXiHighlight(pointIndex) {
     });
 }
 
-// Format one basis term symbolically with highlighting
-function formatBasisSymbolic(allPoints, j) {
+// Format one basis term symbolically with highlighting and optional CSS class
+function formatBasisSymbolic(allPoints, j, cssClass = null) {
     const n = allPoints.length;
     let numParts = [];
     let denomParts = [];
@@ -283,11 +340,17 @@ function formatBasisSymbolic(allPoints, j) {
     const fSym = `\\cssId{fx${j + 1}}{f(x_{${j + 1}})}`;
     const numExpr = numParts.join("\\cdot ");
     const denomExpr = denomParts.join("\\cdot ");
-    return `\\frac{${numExpr}}{${denomExpr}} \\cdot ${fSym}`;
+    const termContent = `\\frac{${numExpr}}{${denomExpr}} \\cdot ${fSym}`;
+    
+    // Wrap with CSS class if provided
+    if (cssClass && showBasisCurves) {
+        return `\\class{${cssClass}}{${termContent}}`;
+    }
+    return termContent;
 }
 
-// Format one basis term numerically with highlighting
-function formatBasisNumeric(allPoints, j) {
+// Format one basis term numerically with highlighting and optional CSS class
+function formatBasisNumeric(allPoints, j, cssClass = null) {
     const n = allPoints.length;
     let numParts = [];
     let denomParts = [];
@@ -301,12 +364,21 @@ function formatBasisNumeric(allPoints, j) {
     const yj = allPoints[j].y.toFixed(3);
     const numExpr = numParts.join("\\cdot ");
     const denomExpr = denomParts.join("\\cdot ");
-    return `\\frac{${numExpr}}{${denomExpr}} \\cdot \\cssId{fx${j + 1}}{(${yj})}`;
+    const termContent = `\\frac{${numExpr}}{${denomExpr}} \\cdot \\cssId{fx${j + 1}}{(${yj})}`;
+    
+    // Wrap with CSS class if provided
+    if (cssClass && showBasisCurves) {
+        return `\\class{${cssClass}}{${termContent}}`;
+    }
+    return termContent;
 }
 
 // Update math display: show only the current polynomial
 function updateMath() {
     mathDisplay.innerHTML = '';
+    
+    // Update CSS styles for basis term backgrounds
+    updateBasisStyles();
     
     // Current polynomial only
     const curDiv = document.createElement('div');
@@ -320,13 +392,17 @@ function updateMath() {
         return;
     } else if (points.length === 1) {
         const yVal = points[0].y.toFixed(3);
-        curHtml += `$$P(x) = \\cssId{fx1}{${yVal}}$$`;
+        const cssClass = showBasisCurves ? `basis-term-0` : null;
+        const termContent = `\\cssId{fx1}{${yVal}}`;
+        const finalTerm = cssClass ? `\\class{${cssClass}}{${termContent}}` : termContent;
+        curHtml += `$$P(x) = ${finalTerm}$$`;
     } else {
         let terms = [];
         for (let j = 0; j < points.length; j++) {
+            const cssClass = showBasisCurves ? `basis-term-${j}` : null;
             const termTex = displayNumeric
-                ? formatBasisNumeric(points, j)
-                : formatBasisSymbolic(points, j);
+                ? formatBasisNumeric(points, j, cssClass)
+                : formatBasisSymbolic(points, j, cssClass);
             terms.push(termTex);
         }
         curHtml += `$$P(x) = ${terms.join(' + ')}$$`;
