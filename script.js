@@ -1,7 +1,6 @@
 // Configuration
 const X_MIN = -10, X_MAX = 10;
 const Y_MIN = -10, Y_MAX = 10;
-const CANVAS_SIZE = 600;
 const POINT_RADIUS = 5;
 const AXIS_COLOR = "#444";
 const POLY_COLOR = "#2980b9";
@@ -14,6 +13,7 @@ let points = [];          // Array of { x, y }
 let hoverPoint = null;    // { x, y } or null
 let displayNumeric = false;
 let showBasisCurves = true; // New state for basis curves visibility
+let canvasSize = 600;     // Dynamic canvas size
 
 // DOM refs
 const canvas = document.getElementById("plotCanvas");
@@ -22,16 +22,38 @@ const toggleNumeric = document.getElementById("toggleNumeric");
 const toggleBasisCurves = document.getElementById("toggleBasisCurves");
 const pointsTableBody = document.querySelector("#pointsTable tbody");
 const mathDisplay = document.getElementById("mathDisplay");
+const plotContainer = document.getElementById("plotContainer");
+
+// Function to resize canvas to fit container
+function resizeCanvas() {
+    const containerRect = plotContainer.getBoundingClientRect();
+    const containerPadding = 40; // Account for padding in plotContainer
+    const availableWidth = containerRect.width - containerPadding;
+    const availableHeight = containerRect.height - containerPadding;
+    
+    // Make canvas square, using the smaller dimension
+    canvasSize = Math.min(availableWidth, availableHeight);
+    canvasSize = Math.max(canvasSize, 200); // Minimum size
+    
+    // Set canvas size
+    canvas.width = canvasSize;
+    canvas.height = canvasSize;
+    canvas.style.width = canvasSize + 'px';
+    canvas.style.height = canvasSize + 'px';
+    
+    // Redraw everything after resize
+    redrawAll();
+}
 
 // Coordinate helpers
 function canvasToCoord(px, py) {
-    const x = X_MIN + (px / CANVAS_SIZE) * (X_MAX - X_MIN);
-    const y = Y_MAX - (py / CANVAS_SIZE) * (Y_MAX - Y_MIN);
+    const x = X_MIN + (px / canvasSize) * (X_MAX - X_MIN);
+    const y = Y_MAX - (py / canvasSize) * (Y_MAX - Y_MIN);
     return { x, y };
 }
 function coordToCanvas(x, y) {
-    const px = ((x - X_MIN) / (X_MAX - X_MIN)) * CANVAS_SIZE;
-    const py = ((Y_MAX - y) / (Y_MAX - Y_MIN)) * CANVAS_SIZE;
+    const px = ((x - X_MIN) / (X_MAX - X_MIN)) * canvasSize;
+    const py = ((Y_MAX - y) / (Y_MAX - Y_MIN)) * canvasSize;
     return { px, py };
 }
 
@@ -149,10 +171,10 @@ function drawAxes() {
     ctx.beginPath();
     const y0 = coordToCanvas(0, 0).py;
     ctx.moveTo(0, y0);
-    ctx.lineTo(CANVAS_SIZE, y0);
+    ctx.lineTo(canvasSize, y0);
     const x0 = coordToCanvas(0, 0).px;
     ctx.moveTo(x0, 0);
-    ctx.lineTo(x0, CANVAS_SIZE);
+    ctx.lineTo(x0, canvasSize);
     ctx.stroke();
 
     const tickLen = 5;
@@ -446,7 +468,7 @@ function updateMath() {
 
 // Redraw everything
 function redrawAll() {
-    ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
     drawAxes();
     const allPoints = points.slice();
     if (hoverPoint) allPoints.push({ x: hoverPoint.x, y: hoverPoint.y });
@@ -463,7 +485,7 @@ canvas.addEventListener('click', e => {
     const cx = e.clientX - rect.left;
     const cy = e.clientY - rect.top;
     const { x, y } = canvasToCoord(cx, cy);
-    const radiusCoord = (POINT_RADIUS / CANVAS_SIZE) * (X_MAX - X_MIN);
+    const radiusCoord = (POINT_RADIUS / canvasSize) * (X_MAX - X_MIN);
     let removeIdx = -1;
     for (let i = 0; i < points.length; i++) {
         const dx = x - points[i].x;
@@ -504,10 +526,24 @@ document.getElementById('clearBtn').addEventListener('click', () => {
     redrawAll();
 });
 
-// Handle window resize to re-adjust math scaling
+// Handle window resize to re-adjust canvas and math scaling
 window.addEventListener('resize', () => {
+    resizeCanvas();
     setTimeout(updateMath, 200);
 });
 
-// Initial draw
-redrawAll();
+// Initial setup
+window.addEventListener('load', () => {
+    resizeCanvas();
+    redrawAll();
+});
+
+// Also resize when the page is ready (in case load event already fired)
+if (document.readyState === 'complete') {
+    resizeCanvas();
+    redrawAll();
+} else {
+    // Initial draw for immediate feedback
+    resizeCanvas();
+    redrawAll();
+}

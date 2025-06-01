@@ -8,6 +8,7 @@ body {
     padding-top: 0px;
     background-color: #f5f1e8;
     color: #5d4e37;
+    min-height: 100vh;
 }
 
 h2 {
@@ -24,10 +25,45 @@ h2 {
     width: 100%;
     margin-bottom: 30px;
     gap: 20px;
+    height: calc(100vh - 320px); /* Account for header, margins, and math section */
+    min-height: 500px;
 }
 
-/* Left panel: canvas only */
+/* Left panel: new panel for future content */
 #left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #e0d5c7;
+    height: 100%;
+    min-height: 200px;
+    color: #999;
+    font-style: italic;
+}
+
+.panel-container::after {
+    content: "Future content area";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    color: #bbb;
+}
+
+/* Center panel: canvas */
+#center-panel {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -88,18 +124,25 @@ h2 {
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: #ffffff;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     border: 1px solid #e0d5c7;
+    flex: 1;
+    min-height: 300px;
 }
 
 #plotCanvas {
     cursor: crosshair;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
-/* Math display - now below everything */
+/* Math display - now below everything with fixed height */
 #mathDisplay {
     width: 100%;
     background-color: #ffffff;
@@ -208,15 +251,28 @@ label {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     #main-container {
         flex-direction: column;
+        height: auto;
+        min-height: auto;
+    }
+    
+    #left-panel, #center-panel {
+        flex: none;
+        min-height: 300px;
     }
     
     #right-panel {
         flex: none;
     }
     
+    #plotContainer {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
     #controls {
         justify-content: center;
     }
@@ -227,6 +283,10 @@ label {
     
     h2 {
         font-size: 24px;
+    }
+    
+    #main-container {
+        gap: 15px;
     }
 }
 
