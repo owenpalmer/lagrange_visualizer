@@ -1,0 +1,85 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+#main-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Left panel: controls, canvas, math */
+#left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+}
+
+#controls {
+    margin-bottom: 10px;
+}
+
+#plotContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+#plotCanvas {
+    border: 1px solid #333;
+    cursor: crosshair;
+}
+
+#mathDisplay {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fafafa;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.latex-block {
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+/* Table styling */
+#right-panel {
+    flex: 0 0 300px;
+}
+
+#pointsTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#pointsTable th,
+#pointsTable td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+    font-size: 14px;
+}
+
+#pointsTable th {
+    background-color: #f0f0f0;
+}
+
+.ghost-row {
+    opacity: 0.5;
+    font-style: italic;
+}

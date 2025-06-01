@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lagrange Polynomial Visualizer</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+  <h2>Lagrange Polynomial Visualizer</h2>
+  <div id="main-container">
+    <!-- Left: controls, canvas, math -->
+    <div id="left-panel">
+      <div id="controls">
+        <button id="clearBtn">Clear All</button>
+        <input type="checkbox" id="toggleNumeric" /><label for="toggleNumeric">Display Numerical</label>
+      </div>
+      <div id="plotContainer">
+        <canvas id="plotCanvas" width="600" height="600"></canvas>
+      </div>
+      <div id="mathDisplay">
+        <!-- Symbolic or numeric basis-term expressions will appear here -->
+      </div>
+    </div>
+    <!-- Right: points table -->
+    <div id="right-panel">
+      <table id="pointsTable">
+        <thead>
+          <tr><th>i</th><th>x<sub>i</sub></th><th>f(x<sub>i</sub>)</th></tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic rows inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
